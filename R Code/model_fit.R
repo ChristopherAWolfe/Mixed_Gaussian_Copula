@@ -1,0 +1,262 @@
+#################################################################################
+# This is the 2nd of 5 scripts to complete the analyses in Wolfe and Stull 2024.#
+# The following script uses the data prepared in 'data_prep.R', readies the     #
+# data for a Stan model, and evaluates the log probability density function.    # 
+#################################################################################
+
+# Necessary Packages
+library(cmdstanr)
+set_cmdstan_path("C:/cmdstan/cmdstan-2.33.1")
+
+# Import Data
+dat <- read.csv("data.analysis.csv")
+
+# Compile Stan Model
+mod <- cmdstan_model(stan_file = "MixGaussCop_Growth.stan")
+
+# Prepare Data
+fdl <- dat$FDL_L
+fmsb <- dat$FMSB_L
+fdb <- dat$FDB_L
+tdl <- dat$TDL_L
+tpb <- dat$TPB_L
+tmsb <- dat$TMSB_L
+tdb <- dat$TDB_L
+fbdl <- dat$FBDL_L
+hdl <- dat$HDL_L
+hpb <- dat$HPB_L
+hmsb <- dat$HMSB_L
+hdb <- dat$HDB_L
+rdl <- dat$RDL_L
+rpb <- dat$RPB_L
+rmsb <- dat$RMSB_L
+rdb <- dat$RDB_L
+udl <- dat$UDL_L
+umsb <- dat$UMSB_L
+
+max_m1 <- dat$max_M1_L
+max_m1[is.na(max_m1)] <- 99
+max_m2 <- dat$max_M2_L
+max_m2[is.na(max_m2)] <- 99
+max_m3 <- dat$max_M3_L
+max_m3[is.na(max_m3)] <- 99
+max_pm1 <- dat$max_PM1_L
+max_pm1[is.na(max_pm1)] <- 99
+max_pm2 <- dat$max_PM2_L
+max_pm2[is.na(max_pm2)] <- 99
+max_c <- dat$max_C_L
+max_c[is.na(max_c)] <- 99
+max_i1 <- dat$max_I1_L
+max_i1[is.na(max_i1)] <- 99
+max_i2 <- dat$max_I2_L
+max_i2[is.na(max_i2)] <- 99
+
+man_m1 <- dat$man_M1_L
+man_m1[is.na(man_m1)] <- 99
+man_m2 <- dat$man_M2_L
+man_m2[is.na(man_m2)] <- 99
+man_m3 <- dat$man_M3_L
+man_m3[is.na(man_m3)] <- 99
+man_pm1 <- dat$man_PM1_L
+man_pm1[is.na(man_pm1)] <- 99
+man_pm2 <- dat$man_PM2_L
+man_pm2[is.na(man_pm2)] <- 99
+man_c <- dat$man_C_L
+man_c[is.na(man_c)] <- 99
+man_i1 <- dat$man_I1_L
+man_i1[is.na(man_i1)] <- 99
+man_i2 <- dat$man_I2_L
+man_i2[is.na(man_i2)] <- 99
+
+fh_ef <- dat$FH_EF_L
+fh_ef[is.na(fh_ef)] <- 99
+fgt_ef <- dat$FGT_EF_L
+fgt_ef[is.na(fgt_ef)] <- 99
+flt_ef <- dat$FLT_EF_L
+flt_ef[is.na(flt_ef)] <- 99
+fde_ef <- dat$FDE_EF_L
+fde_ef[is.na(fde_ef)] <- 99
+tpe_ef <- dat$TPE_EF_L
+tpe_ef[is.na(tpe_ef)] <- 99
+tde_ef <- dat$TDE_EF_L
+tde_ef[is.na(tde_ef)] <- 99
+fbpe_ef <- dat$FBPE_EF_L
+fbpe_ef[is.na(fbpe_ef)] <- 99
+fbde_ef <- dat$FBDE_EF_L
+fbde_ef[is.na(fbde_ef)] <- 99
+hpe_ef <- dat$HPE_EF_L
+hpe_ef[is.na(hpe_ef)] <- 99
+hde_ef <- dat$HDE_EF_L
+hde_ef[is.na(hde_ef)] <- 99
+hme_ef <- dat$HME_EF_L
+hme_ef[is.na(hme_ef)] <- 99
+rpe_ef <- dat$RPE_EF_L
+rpe_ef[is.na(rpe_ef)] <- 99
+rde_ef <- dat$RDE_EF_L
+rde_ef[is.na(rde_ef)] <- 99
+upe_ef <- dat$UPE_EF_L
+upe_ef[is.na(upe_ef)] <- 99
+ude_ef <- dat$UDE_EF_L
+ude_ef[is.na(ude_ef)] <- 99
+ct_ef <- dat$CT_EF_L
+ct_ef[is.na(ct_ef)] <- 99
+ispr_ef <- dat$ISPR_EF_L
+ispr_ef[is.na(ispr_ef)] <- 99
+ilis_ef <- dat$ILIS_EF_L
+ilis_ef[is.na(ilis_ef)] <- 99
+cc_oss <- dat$CC_Oss
+cc_oss[is.na(cc_oss)] <- 99
+tc_oss <- dat$TC_Oss
+tc_oss[is.na(tc_oss)] <- 99
+
+# Prepare Stan Data
+standat <- list(
+  N = nrow(dat),
+  M = 54,
+  x = dat$agey,
+  y_FDL = fdl[!is.na(fdl)],
+  FDL_complete = length(fdl[!is.na(fdl)]),
+  FDL_missing = sum(is.na(fdl)),
+  FDL_index_present = which(!is.na(fdl)),
+  FDL_index_missing = which(is.na(fdl)),
+  y_FMSB = fmsb[!is.na(fmsb)],
+  FMSB_complete = length(fmsb[!is.na(fmsb)]),
+  FMSB_missing = sum(is.na(fmsb)),
+  FMSB_index_present = which(!is.na(fmsb)),
+  FMSB_index_missing = which(is.na(fmsb)),
+  y_FDB = fdb[!is.na(fdb)],
+  FDB_complete = length(fdb[!is.na(fdb)]),
+  FDB_missing = sum(is.na(fdb)),
+  FDB_index_present = which(!is.na(fdb)),
+  FDB_index_missing = which(is.na(fdb)),
+  y_TDL = tdl[!is.na(tdl)],
+  TDL_complete = length(tdl[!is.na(tdl)]),
+  TDL_missing = sum(is.na(tdl)),
+  TDL_index_present = which(!is.na(tdl)),
+  TDL_index_missing = which(is.na(tdl)),
+  y_TPB = tpb[!is.na(tpb)],
+  TPB_complete = length(tpb[!is.na(tpb)]),
+  TPB_missing = sum(is.na(tpb)),
+  TPB_index_present = which(!is.na(tpb)),
+  TPB_index_missing = which(is.na(tpb)),
+  y_TMSB = tmsb[!is.na(tmsb)],
+  TMSB_complete = length(tmsb[!is.na(tmsb)]),
+  TMSB_missing = sum(is.na(tmsb)),
+  TMSB_index_present = which(!is.na(tmsb)),
+  TMSB_index_missing = which(is.na(tmsb)),
+  y_TDB = tdb[!is.na(tdb)],
+  TDB_complete = length(tdb[!is.na(tdb)]),
+  TDB_missing = sum(is.na(tdb)),
+  TDB_index_present = which(!is.na(tdb)),
+  TDB_index_missing = which(is.na(tdb)),
+  y_FBDL = fbdl[!is.na(fbdl)],
+  FBDL_complete = length(fbdl[!is.na(fbdl)]),
+  FBDL_missing = sum(is.na(fbdl)),
+  FBDL_index_present = which(!is.na(fbdl)),
+  FBDL_index_missing = which(is.na(fbdl)),
+  y_HDL = hdl[!is.na(hdl)],
+  HDL_complete = length(hdl[!is.na(hdl)]),
+  HDL_missing = sum(is.na(hdl)),
+  HDL_index_present = which(!is.na(hdl)),
+  HDL_index_missing = which(is.na(hdl)),
+  y_HPB = hpb[!is.na(hpb)],
+  HPB_complete = length(hpb[!is.na(hpb)]),
+  HPB_missing = sum(is.na(hpb)),
+  HPB_index_present = which(!is.na(hpb)),
+  HPB_index_missing = which(is.na(hpb)),
+  y_HMSB = hmsb[!is.na(hmsb)],
+  HMSB_complete = length(hmsb[!is.na(hmsb)]),
+  HMSB_missing = sum(is.na(hmsb)),
+  HMSB_index_present = which(!is.na(hmsb)),
+  HMSB_index_missing = which(is.na(hmsb)),
+  y_HDB = hdb[!is.na(hdb)],
+  HDB_complete = length(hdb[!is.na(hdb)]),
+  HDB_missing = sum(is.na(hdb)),
+  HDB_index_present = which(!is.na(hdb)),
+  HDB_index_missing = which(is.na(hdb)),
+  y_RDL = rdl[!is.na(rdl)],
+  RDL_complete = length(rdl[!is.na(rdl)]),
+  RDL_missing = sum(is.na(rdl)),
+  RDL_index_present = which(!is.na(rdl)),
+  RDL_index_missing = which(is.na(rdl)),
+  y_RPB = rpb[!is.na(rpb)],
+  RPB_complete = length(rpb[!is.na(rpb)]),
+  RPB_missing = sum(is.na(rpb)),
+  RPB_index_present = which(!is.na(rpb)),
+  RPB_index_missing = which(is.na(rpb)),
+  y_RMSB = rmsb[!is.na(rmsb)],
+  RMSB_complete = length(rmsb[!is.na(rmsb)]),
+  RMSB_missing = sum(is.na(rmsb)),
+  RMSB_index_present = which(!is.na(rmsb)),
+  RMSB_index_missing = which(is.na(rmsb)),
+  y_RDB = rdb[!is.na(rdb)],
+  RDB_complete = length(rdb[!is.na(rdb)]),
+  RDB_missing = sum(is.na(rdb)),
+  RDB_index_present = which(!is.na(rdb)),
+  RDB_index_missing = which(is.na(rdb)),
+  y_UDL = udl[!is.na(udl)],
+  UDL_complete = length(udl[!is.na(udl)]),
+  UDL_missing = sum(is.na(udl)),
+  UDL_index_present = which(!is.na(udl)),
+  UDL_index_missing = which(is.na(udl)),
+  y_UMSB = umsb[!is.na(umsb)],
+  UMSB_complete = length(umsb[!is.na(umsb)]),
+  UMSB_missing = sum(is.na(umsb)),
+  UMSB_index_present = which(!is.na(umsb)),
+  UMSB_index_missing = which(is.na(umsb)),
+  C_dental = 12,
+  y_max_m1 = max_m1,
+  y_max_m2 = max_m2,
+  y_max_m3 = max_m3,
+  y_max_pm1 = max_pm1,
+  y_max_pm2 = max_pm2,
+  y_max_c = max_c,
+  y_max_i1 = max_i1,
+  y_max_i2 = max_i2,
+  y_man_m1 = man_m1,
+  y_man_m2 = man_m2,
+  y_man_m3 = man_m3,
+  y_man_pm1 = man_pm1,
+  y_man_pm2 = man_pm2,
+  y_man_c = man_c,
+  y_man_i1 = man_i1,
+  y_man_i2 = man_i2,
+  C_lb_ef = 7,
+  y_fh_ef = fh_ef,
+  y_fgt_ef = fgt_ef,
+  y_flt_ef = flt_ef,
+  y_fde_ef = fde_ef,
+  y_tpe_ef = tpe_ef,
+  y_tde_ef = tde_ef,
+  y_fbpe_ef = fbpe_ef,
+  y_fbde_ef = fbde_ef,
+  y_hpe_ef = hpe_ef,
+  y_hde_ef = hde_ef,
+  y_hme_ef = hme_ef,
+  y_rpe_ef = rpe_ef,
+  y_rde_ef = rde_ef,
+  y_upe_ef = upe_ef,
+  y_ude_ef = ude_ef,
+  y_ct_ef = ct_ef,
+  C_pelvis_ef = 3,
+  y_ispr_ef = ispr_ef,
+  y_ilis_ef = ilis_ef,
+  C_carpal_oss = 9,
+  y_cc_oss = cc_oss,
+  C_tarsal_oss = 8,
+  y_tc_oss = tc_oss
+)
+
+# Evaluate Log Density
+fit <-mod$sample(data = standat,
+                 refresh = 500,
+                 chains = 4,
+                 parallel_chains = 4,
+                 init = 0.01,
+                 max_treedepth = 15,
+                 iter_warmup = 2000,
+                 iter_sampling = 4000,
+                 output_dir = "fitted_models/multivariate_models/final",
+                 output_basename = "out_cop")
+
+####################################END#########################################
