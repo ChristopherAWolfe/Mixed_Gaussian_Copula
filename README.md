@@ -16,3 +16,7 @@ The following steps allow a user to complete the analyses from the publication:
 > Stull, K.E., Chu, E.Y., Corron, L.K., & Price, M.H. (2023). The Mixed Cumulative Probit: A multivariate generalization of transition analysis that accommodates variation in the shape, spread, and structure of data. Royal Society Open Science.
 
 The code here is designed to evaluate posterior samples of human growth and development data. That said, the basic mode fitting steps can be completed for any series of data types. 
+
+To cite usage of this code please use:
+Christopher Wolfe. (2024). ChristopherAWolfe/Wolfe_Stull_Copula_PNAS: Pre-submission code (v1.0.0). Zenodo.
+[![DOI](https://zenodo.org/badge/816498904.svg)](https://zenodo.org/doi/10.5281/zenodo.12037912)
