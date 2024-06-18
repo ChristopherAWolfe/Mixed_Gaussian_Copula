@@ -1,6 +1,7 @@
 # Wolfe_Stull_Copula_PNAS
 The code and files associated with this repository may be used to recreate the results in *A Bayesian framework to infer ontogenetic relationships and predict associated parameters using human growth and development traits* by Christopher A. Wolfe and Kyra E. Stull. All data in the present analyses derives from the open-access repository associated with the **Subadult Virtual Anthropology Database**. The data file can be found at [Stull & Corron, 2022](https://zenodo.org/records/5193208). More information about the repository can be found at the [homepage](https://www.unr.edu/anthropology/research-and-facilities/subadult-database).
 > Stull, K., & Corron, L. (2021). SVAD_US (1.0.0) [Data set]. Zenodo. https://doi.org/10.5281/zenodo.5193208.
+
 > Stull, K., & Corron, L. (2022). Subadult Virtual Anthropology Database (SVAD) Data Collection Protocol: Epiphyseal Fusion, Diaphyseal Dimensions, Dental Development Stages, Vertebral Neural Canal Dimensions. Zenodo. https://doi.org/10.5281/zenodo.7293977.
 
 The following steps allow a user to complete the analyses from the publication:
