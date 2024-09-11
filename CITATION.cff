@@ -6,7 +6,7 @@ authors:
   orcid: "https://orcid.org/my-orcid?orcid=0000-0001-9554-1683"
 - family-names: Stull
   given-names: Kyra
-title: "Wolfe_Stull_Copula_PNAS"
+title: "Mixed_Gaussian_Copula"
 version: 1.0.0
 doi: 10.5281/zenodo.1234
 date-released: 2024-06-17
